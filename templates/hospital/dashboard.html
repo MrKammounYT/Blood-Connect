@@ -7,42 +7,49 @@
     <i class="bi bi-exclamation-triangle-fill mt-1 flex-shrink-0"></i>
     <div>
       <strong>Compte en attente de validation</strong><br>
-      <small>Votre établissement n'a pas encore été validé par l'administrateur. Vous ne pouvez pas encore publier de demandes urgentes.</small>
+      <small>Votre établissement n'a pas encore été validé. Vous ne pouvez pas publier de demandes urgentes.</small>
     </div>
   </div>
 {% endif %}
 
-<div class="d-flex align-items-center gap-3 mb-4">
-  <div style="width:56px;height:56px;background:#d6eaf8;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#2980b9;">
-    <i class="bi bi-hospital-fill"></i>
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+  <div class="d-flex align-items-center gap-3">
+    <div style="width:56px;height:56px;background:#d6eaf8;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#2980b9;">
+      <i class="bi bi-hospital-fill"></i>
+    </div>
+    <div>
+      <h4 class="fw-bold mb-0">{{ hopital.nom }}</h4>
+      <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ hopital.ville }}</span>
+      {% if hopital.valide %}
+        <span class="badge bg-success ms-2"><i class="bi bi-patch-check-fill me-1"></i>Validé</span>
+      {% else %}
+        <span class="badge bg-warning text-dark ms-2">En attente</span>
+      {% endif %}
+    </div>
   </div>
-  <div>
-    <h4 class="fw-bold mb-0">{{ hopital.nom }}</h4>
-    <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ hopital.ville }}</span>
-    {% if hopital.valide %}
-      <span class="badge bg-success ms-2"><i class="bi bi-patch-check-fill me-1"></i>Validé</span>
-    {% else %}
-      <span class="badge bg-warning text-dark ms-2">En attente</span>
-    {% endif %}
-  </div>
+  {% if hopital.valide %}
+    <a href="{% url 'hospital:create_demande' %}" class="btn btn-primary fw-semibold">
+      <i class="bi bi-plus-lg me-1"></i>Nouvelle demande urgente
+    </a>
+  {% endif %}
 </div>
 
 <div class="row g-3 mb-4">
   <div class="col-md-4">
-    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
       <div class="d-flex align-items-center gap-3">
         <div style="width:44px;height:44px;background:#fadbd8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#c0392b;">
           <i class="bi bi-exclamation-circle"></i>
         </div>
         <div>
           <div class="text-muted small">Demandes actives</div>
-          <div class="fw-bold fs-4">{{ hopital.demandes.count }}</div>
+          <div class="fw-bold fs-4">{{ demandes_actives.count }}</div>
         </div>
       </div>
     </div>
   </div>
   <div class="col-md-4">
-    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
       <div class="d-flex align-items-center gap-3">
         <div style="width:44px;height:44px;background:#d5f5e3;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#1e8449;">
           <i class="bi bi-calendar-heart"></i>
@@ -55,22 +62,49 @@
     </div>
   </div>
   <div class="col-md-4">
-    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
       <div class="d-flex align-items-center gap-3">
         <div style="width:44px;height:44px;background:#fdebd0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#d35400;">
           <i class="bi bi-reply-all"></i>
         </div>
         <div>
-          <div class="text-muted small">Réponses reçues</div>
-          <div class="fw-bold fs-4">—</div>
+          <div class="text-muted small">Total demandes</div>
+          <div class="fw-bold fs-4">{{ hopital.demandes.count }}</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="card border-0 shadow-sm rounded-4 p-4 text-center text-muted">
-  <i class="bi bi-hourglass-split" style="font-size:2rem;opacity:0.4;"></i>
-  <p class="mt-2 mb-0">Les fonctionnalités complètes arrivent au <strong>Sprint 3</strong> —<br>demandes urgentes, gestion des campagnes, réponses des donneurs.</p>
+{% if demandes_actives %}
+<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h6 class="fw-bold mb-0"><i class="bi bi-exclamation-circle-fill text-danger me-2"></i>Demandes actives</h6>
+    <a href="{% url 'hospital:demande_history' %}" class="btn btn-outline-secondary btn-sm">Voir tout</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Groupe</th><th>Quantité</th><th>Délai</th><th>Réponses</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in demandes_actives %}
+          <tr>
+            <td><span class="badge" style="background:#c0392b;">{{ d.groupe_sanguin }}</span></td>
+            <td>{{ d.quantite }} poches</td>
+            <td>{{ d.delai|date:"d/m/Y" }}</td>
+            <td>{{ d.reponses.count }}</td>
+            <td>
+              <a href="{% url 'hospital:demande_respondents' d.pk %}" class="btn btn-sm btn-outline-primary me-1">Réponses</a>
+              <a href="{% url 'hospital:edit_demande' d.pk %}" class="btn btn-sm btn-outline-secondary">Modifier</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
+{% endif %}
 {% endblock %}

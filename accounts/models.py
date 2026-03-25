@@ -11,7 +11,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=10, choices=Role.choices, default=Role.DONNEUR)
 
     def is_donneur(self):
-        return self.role == self.Role.DONNEUR
+        return self.role == self.Role.DONNEUR and not self.is_superuser
 
     def is_hopital(self):
         return self.role == self.Role.HOPITAL

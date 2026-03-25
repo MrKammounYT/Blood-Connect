@@ -2,6 +2,14 @@
 {% block title %}Tableau de bord — BloodConnect{% endblock %}
 
 {% block content %}
+{% if upcoming_inscription %}
+<div class="alert alert-info d-flex gap-2 align-items-center">
+  <i class="bi bi-calendar-event-fill flex-shrink-0"></i>
+  <span>Rappel : vous êtes inscrit à la campagne <strong>{{ upcoming_inscription.campagne.nom }}</strong>
+  le <strong>{{ upcoming_inscription.campagne.date|date:"d/m/Y" }}</strong> à {{ upcoming_inscription.creneau_horaire|time:"H:i" }}.</span>
+</div>
+{% endif %}
+
 <div class="d-flex align-items-center gap-3 mb-4">
   <div style="width:56px;height:56px;background:#fadbd8;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#c0392b;">
     <i class="bi bi-droplet-fill"></i>
@@ -14,6 +22,9 @@
     {% else %}
       <span class="badge bg-secondary ms-1"><i class="bi bi-clock me-1"></i>Non éligible</span>
     {% endif %}
+    {% if not donneur.actif %}
+      <span class="badge bg-warning text-dark ms-1"><i class="bi bi-pause-circle me-1"></i>Indisponible</span>
+    {% endif %}
   </div>
 </div>
 
@@ -25,7 +36,7 @@
           <i class="bi bi-droplet"></i>
         </div>
         <div>
-          <div class="text-muted small">Mes dons</div>
+          <div class="text-muted small">Total dons</div>
           <div class="fw-bold fs-4">{{ donneur.dons.count }}</div>
         </div>
       </div>
@@ -57,16 +68,94 @@
           <i class="bi bi-exclamation-triangle"></i>
         </div>
         <div>
-          <div class="text-muted small">Appels urgents compatibles</div>
-          <div class="fw-bold fs-4">—</div>
+          <div class="text-muted small">Appels compatibles</div>
+          <div class="fw-bold fs-4">{{ demandes.count }}</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="card border-0 shadow-sm rounded-4 p-4 text-center text-muted">
-  <i class="bi bi-hourglass-split" style="font-size:2rem;opacity:0.4;"></i>
-  <p class="mt-2 mb-0">Les fonctionnalités complètes arrivent au <strong>Sprint 3</strong> —<br>demandes urgentes, historique des dons, campagnes.</p>
+<div class="row g-4">
+  <!-- Urgent requests -->
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0"><i class="bi bi-exclamation-circle-fill text-danger me-2"></i>Appels urgents compatibles</h6>
+        <span class="badge" style="background:#c0392b;">{{ donneur.groupe_sanguin }}</span>
+      </div>
+      {% if demandes %}
+        {% for demande in demandes %}
+          <div class="border rounded-3 p-3 mb-2 {% if demande.pk in reponses_ids %}bg-light{% endif %}">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="badge me-1" style="background:#c0392b;">{{ demande.groupe_sanguin }}</span>
+                <strong>{{ demande.hopital.nom }}</strong>
+                <span class="text-muted small ms-1">— {{ demande.hopital.ville }}</span>
+                <div class="small text-muted mt-1">{{ demande.quantite }} poches · Avant le {{ demande.delai|date:"d/m/Y" }}</div>
+                {% if demande.description %}
+                  <div class="small text-muted fst-italic">{{ demande.description|truncatechars:80 }}</div>
+                {% endif %}
+              </div>
+              <div class="ms-2 flex-shrink-0">
+                {% if demande.pk in reponses_ids %}
+                  <span class="badge bg-success"><i class="bi bi-check2 me-1"></i>Répondu</span>
+                {% elif donneur.est_eligible and donneur.actif %}
+                  <form method="post" action="{% url 'donor:respond_demande' demande.pk %}">
+                    {% csrf_token %}
+                    <button class="btn btn-primary btn-sm fw-semibold">
+                      <i class="bi bi-hand-thumbs-up me-1"></i>Répondre
+                    </button>
+                  </form>
+                {% else %}
+                  <span class="badge bg-secondary">Non éligible</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="text-center text-muted py-4">
+          <i class="bi bi-check-circle" style="font-size:2rem;opacity:0.3;"></i>
+          <p class="mt-2 mb-0 small">Aucun appel urgent compatible pour le moment.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Donation history + record -->
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0"><i class="bi bi-clock-history text-danger me-2"></i>Historique des dons</h6>
+        <a href="{% url 'donor:record_don' %}" class="btn btn-outline-primary btn-sm fw-semibold">
+          <i class="bi bi-plus-lg me-1"></i>Enregistrer
+        </a>
+      </div>
+      {% if dons %}
+        <ul class="list-unstyled mb-0">
+          {% for don in dons %}
+            <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+              <div>
+                <div class="fw-semibold small">{{ don.hopital.nom|default:"—" }}</div>
+                <div class="text-muted" style="font-size:0.8rem;">{{ don.date_don|date:"d/m/Y" }}</div>
+              </div>
+              {% if don.valide %}
+                <span class="badge bg-success">Validé</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">En attente</span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="text-center text-muted py-4">
+          <i class="bi bi-droplet" style="font-size:2rem;opacity:0.3;"></i>
+          <p class="mt-2 mb-0 small">Aucun don enregistré.</p>
+          <a href="{% url 'donor:record_don' %}" class="btn btn-primary btn-sm mt-2">Enregistrer mon premier don</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 {% endblock %}

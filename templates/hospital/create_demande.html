@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Nouvelle demande urgente — BloodConnect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-7">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+      <h5 class="fw-bold mb-1"><i class="bi bi-exclamation-circle-fill text-danger me-2"></i>Publier une demande urgente</h5>
+      <p class="text-muted small mb-4">Les donneurs compatibles verront cette demande dans leur tableau de bord.</p>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">{{ field.label }}</label>
+            {% if field.field.widget.input_type == 'select' %}
+              <select name="{{ field.html_name }}" class="form-select {% if field.errors %}is-invalid{% endif %}">
+                {% for val, label in field.field.choices %}
+                  <option value="{{ val }}" {% if field.value == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            {% elif field.field.widget.input_type == 'date' %}
+              <input type="date" name="{{ field.html_name }}" class="form-control {% if field.errors %}is-invalid{% endif %}" value="{{ field.value|default:'' }}">
+            {% elif field.field.widget.input_type == 'textarea' %}
+              <textarea name="{{ field.html_name }}" class="form-control {% if field.errors %}is-invalid{% endif %}" rows="3">{{ field.value|default:'' }}</textarea>
+            {% else %}
+              <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.html_name }}" class="form-control {% if field.errors %}is-invalid{% endif %}" value="{{ field.value|default:'' }}">
+            {% endif %}
+            {% for error in field.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+          </div>
+        {% endfor %}
+        <div class="d-flex gap-2 mt-3">
+          <button type="submit" class="btn btn-primary fw-semibold px-4">
+            <i class="bi bi-send me-1"></i>Publier la demande
+          </button>
+          <a href="{% url 'hospital:dashboard' %}" class="btn btn-outline-secondary px-4">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -65,7 +65,7 @@ def _redirect_by_role(user):
 
 @login_required
 def profile_donneur(request):
-    if not request.user.is_donneur():
+    if not request.user.is_donneur() or request.user.is_admin_user():
         return redirect('home')
     donneur = request.user.donneur
     if request.method == 'POST':
