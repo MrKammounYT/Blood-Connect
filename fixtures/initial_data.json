@@ -1,0 +1,25 @@
+[
+  {"model": "accounts.user", "pk": 1, "fields": {"password": "pbkdf2_sha256$870000$test$hashedpassword=", "username": "admin", "first_name": "Admin", "last_name": "BloodConnect", "email": "admin@bloodconnect.dz", "is_staff": true, "is_superuser": true, "is_active": true, "role": "admin", "groups": [], "user_permissions": []}},
+  {"model": "accounts.user", "pk": 2, "fields": {"password": "pbkdf2_sha256$870000$test$hashedpassword=", "username": "chc_oran", "first_name": "CHC", "last_name": "Oran", "email": "chc@oran.dz", "is_staff": false, "is_superuser": false, "is_active": true, "role": "hopital", "groups": [], "user_permissions": []}},
+  {"model": "accounts.user", "pk": 3, "fields": {"password": "pbkdf2_sha256$870000$test$hashedpassword=", "username": "ehu_oran", "first_name": "EHU", "last_name": "Oran", "email": "ehu@oran.dz", "is_staff": false, "is_superuser": false, "is_active": true, "role": "hopital", "groups": [], "user_permissions": []}},
+  {"model": "accounts.user", "pk": 4, "fields": {"password": "pbkdf2_sha256$870000$test$hashedpassword=", "username": "ahmed_d", "first_name": "Ahmed", "last_name": "Benali", "email": "ahmed@mail.dz", "is_staff": false, "is_superuser": false, "is_active": true, "role": "donneur", "groups": [], "user_permissions": []}},
+  {"model": "accounts.user", "pk": 5, "fields": {"password": "pbkdf2_sha256$870000$test$hashedpassword=", "username": "fatima_d", "first_name": "Fatima", "last_name": "Khelil", "email": "fatima@mail.dz", "is_staff": false, "is_superuser": false, "is_active": true, "role": "donneur", "groups": [], "user_permissions": []}},
+  {"model": "accounts.user", "pk": 6, "fields": {"password": "pbkdf2_sha256$870000$test$hashedpassword=", "username": "karim_d", "first_name": "Karim", "last_name": "Meziane", "email": "karim@mail.dz", "is_staff": false, "is_superuser": false, "is_active": true, "role": "donneur", "groups": [], "user_permissions": []}},
+  {"model": "accounts.user", "pk": 7, "fields": {"password": "pbkdf2_sha256$870000$test$hashedpassword=", "username": "sara_d", "first_name": "Sara", "last_name": "Hadj", "email": "sara@mail.dz", "is_staff": false, "is_superuser": false, "is_active": true, "role": "donneur", "groups": [], "user_permissions": []}},
+  {"model": "accounts.user", "pk": 8, "fields": {"password": "pbkdf2_sha256$870000$test$hashedpassword=", "username": "youcef_d", "first_name": "Youcef", "last_name": "Amir", "email": "youcef@mail.dz", "is_staff": false, "is_superuser": false, "is_active": true, "role": "donneur", "groups": [], "user_permissions": []}},
+
+  {"model": "core.hopital", "pk": 1, "fields": {"user": 2, "nom": "CHC Oran", "adresse": "Rue du 1er Novembre, Oran", "ville": "Oran", "telephone": "041000001", "numero_agrement": "AGR-2021-001", "valide": true}},
+  {"model": "core.hopital", "pk": 2, "fields": {"user": 3, "nom": "EHU Oran", "adresse": "BP 4166 Ibn Rochd, Oran", "ville": "Oran", "telephone": "041000002", "numero_agrement": "AGR-2021-002", "valide": true}},
+
+  {"model": "core.donneur", "pk": 1, "fields": {"user": 4, "groupe_sanguin": "O+", "sexe": "M", "date_naissance": "1995-03-15", "ville": "Oran", "telephone": "0550000001", "actif": true}},
+  {"model": "core.donneur", "pk": 2, "fields": {"user": 5, "groupe_sanguin": "A+", "sexe": "F", "date_naissance": "1998-07-22", "ville": "Alger", "telephone": "0550000002", "actif": true}},
+  {"model": "core.donneur", "pk": 3, "fields": {"user": 6, "groupe_sanguin": "B-", "sexe": "M", "date_naissance": "1992-11-08", "ville": "Oran", "telephone": "0550000003", "actif": true}},
+  {"model": "core.donneur", "pk": 4, "fields": {"user": 7, "groupe_sanguin": "AB+", "sexe": "F", "date_naissance": "2000-01-30", "ville": "Tlemcen", "telephone": "0550000004", "actif": true}},
+  {"model": "core.donneur", "pk": 5, "fields": {"user": 8, "groupe_sanguin": "O-", "sexe": "M", "date_naissance": "1988-05-12", "ville": "Oran", "telephone": "0550000005", "actif": false}},
+
+  {"model": "core.demandeurgente", "pk": 1, "fields": {"hopital": 1, "groupe_sanguin": "O+", "quantite": 5, "delai": "2026-04-10", "description": "Besoin urgent suite à accident de la route.", "statut": "active"}},
+  {"model": "core.demandeurgente", "pk": 2, "fields": {"hopital": 1, "groupe_sanguin": "A+", "quantite": 3, "delai": "2026-04-05", "description": "Opération chirurgicale programmée.", "statut": "active"}},
+  {"model": "core.demandeurgente", "pk": 3, "fields": {"hopital": 2, "groupe_sanguin": "B-", "quantite": 2, "delai": "2026-04-08", "description": "Stock critique en B négatif.", "statut": "active"}},
+
+  {"model": "core.campagne", "pk": 1, "fields": {"hopital": 1, "nom": "Campagne Ramadan 2026", "date": "2026-04-01", "lieu": "Salle des fêtes CHC Oran", "groupes_cibles": "O+,O-,A+,B+", "capacite_totale": 50, "description": "Grande campagne de collecte de sang durant le mois de Ramadan."}}
+]
