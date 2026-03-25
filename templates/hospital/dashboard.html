@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Tableau de bord Hôpital — BloodConnect{% endblock %}
+
+{% block content %}
+{% if not hopital.valide %}
+  <div class="alert alert-warning d-flex gap-2 align-items-start mb-4">
+    <i class="bi bi-exclamation-triangle-fill mt-1 flex-shrink-0"></i>
+    <div>
+      <strong>Compte en attente de validation</strong><br>
+      <small>Votre établissement n'a pas encore été validé par l'administrateur. Vous ne pouvez pas encore publier de demandes urgentes.</small>
+    </div>
+  </div>
+{% endif %}
+
+<div class="d-flex align-items-center gap-3 mb-4">
+  <div style="width:56px;height:56px;background:#d6eaf8;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#2980b9;">
+    <i class="bi bi-hospital-fill"></i>
+  </div>
+  <div>
+    <h4 class="fw-bold mb-0">{{ hopital.nom }}</h4>
+    <span class="text-muted small"><i class="bi bi-geo-alt me-1"></i>{{ hopital.ville }}</span>
+    {% if hopital.valide %}
+      <span class="badge bg-success ms-2"><i class="bi bi-patch-check-fill me-1"></i>Validé</span>
+    {% else %}
+      <span class="badge bg-warning text-dark ms-2">En attente</span>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+      <div class="d-flex align-items-center gap-3">
+        <div style="width:44px;height:44px;background:#fadbd8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#c0392b;">
+          <i class="bi bi-exclamation-circle"></i>
+        </div>
+        <div>
+          <div class="text-muted small">Demandes actives</div>
+          <div class="fw-bold fs-4">{{ hopital.demandes.count }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+      <div class="d-flex align-items-center gap-3">
+        <div style="width:44px;height:44px;background:#d5f5e3;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#1e8449;">
+          <i class="bi bi-calendar-heart"></i>
+        </div>
+        <div>
+          <div class="text-muted small">Campagnes</div>
+          <div class="fw-bold fs-4">{{ hopital.campagnes.count }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+      <div class="d-flex align-items-center gap-3">
+        <div style="width:44px;height:44px;background:#fdebd0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#d35400;">
+          <i class="bi bi-reply-all"></i>
+        </div>
+        <div>
+          <div class="text-muted small">Réponses reçues</div>
+          <div class="fw-bold fs-4">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 p-4 text-center text-muted">
+  <i class="bi bi-hourglass-split" style="font-size:2rem;opacity:0.4;"></i>
+  <p class="mt-2 mb-0">Les fonctionnalités complètes arrivent au <strong>Sprint 3</strong> —<br>demandes urgentes, gestion des campagnes, réponses des donneurs.</p>
+</div>
+{% endblock %}

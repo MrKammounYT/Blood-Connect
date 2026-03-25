@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Inscription Donneur — BloodConnect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-8">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mt-2">
+      <div class="row g-0">
+        <div class="col-md-4 d-none d-md-flex flex-column justify-content-center align-items-center text-white p-4"
+             style="background: linear-gradient(160deg, #c0392b, #96281b);">
+          <i class="bi bi-droplet-fill" style="font-size:4rem; opacity:0.9;"></i>
+          <h5 class="fw-bold mt-3 text-center">Devenez donneur</h5>
+          <p class="text-center small opacity-75 mt-2">Chaque don peut sauver jusqu'à 3 vies. Rejoignez notre communauté.</p>
+        </div>
+        <div class="col-md-8 p-4">
+          <h5 class="fw-bold mb-1"><i class="bi bi-person-plus text-danger me-2"></i>Inscription Donneur</h5>
+          <p class="text-muted small mb-3">Créez votre compte pour commencer à donner du sang.</p>
+          <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="mb-3">
+                <label class="form-label fw-semibold small" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {% if field.field.widget.input_type == 'select' %}
+                  <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-select {% if field.errors %}is-invalid{% endif %}">
+                    {% for val, label in field.field.choices %}
+                      <option value="{{ val }}" {% if field.value == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                {% elif field.field.widget.input_type == 'date' %}
+                  <input type="date" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+                         class="form-control {% if field.errors %}is-invalid{% endif %}"
+                         value="{{ field.value|default:'' }}">
+                {% elif field.field.widget.input_type == 'password' %}
+                  <input type="password" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+                         class="form-control {% if field.errors %}is-invalid{% endif %}">
+                {% else %}
+                  <input type="text" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+                         class="form-control {% if field.errors %}is-invalid{% endif %}"
+                         value="{{ field.value|default:'' }}">
+                {% endif %}
+                {% for error in field.errors %}
+                  <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+                {% if field.help_text %}
+                  <div class="form-text text-muted">{{ field.help_text }}</div>
+                {% endif %}
+              </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary w-100 fw-semibold py-2 mt-1">
+              <i class="bi bi-person-check me-1"></i> S'inscrire comme donneur
+            </button>
+          </form>
+          <div class="text-center mt-3 small text-muted">
+            Déjà un compte ? <a href="{% url 'accounts:login' %}" class="text-danger fw-semibold">Se connecter</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

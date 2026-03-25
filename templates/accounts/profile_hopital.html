@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Profil Hôpital — BloodConnect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-7">
+
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <div style="width:56px;height:56px;background:#d6eaf8;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#2980b9;">
+        <i class="bi bi-hospital-fill"></i>
+      </div>
+      <div>
+        <h4 class="fw-bold mb-0">{{ hopital.nom }}</h4>
+        {% if hopital.valide %}
+          <span class="badge bg-success"><i class="bi bi-patch-check-fill me-1"></i>Compte validé</span>
+        {% else %}
+          <span class="badge bg-warning text-dark"><i class="bi bi-clock me-1"></i>En attente de validation</span>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if not hopital.valide %}
+      <div class="alert alert-warning d-flex gap-2 align-items-start mb-4">
+        <i class="bi bi-exclamation-triangle-fill mt-1 flex-shrink-0"></i>
+        <div>
+          <strong>Compte en attente de validation</strong><br>
+          <small>Un administrateur doit valider votre compte avant que vous puissiez publier des demandes urgentes ou créer des campagnes.</small>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <h6 class="fw-bold text-danger mb-3 border-bottom pb-2">
+          <i class="bi bi-building me-2"></i>Informations de l'établissement
+        </h6>
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">Nom de l'établissement</label>
+          <input type="text" name="nom" class="form-control" value="{{ form.nom.value|default:'' }}">
+          {% for error in form.nom.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">Adresse</label>
+          <textarea name="adresse" class="form-control" rows="3">{{ form.adresse.value|default:'' }}</textarea>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Ville</label>
+            <input type="text" name="ville" class="form-control" value="{{ form.ville.value|default:'' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Téléphone</label>
+            <input type="text" name="telephone" class="form-control" value="{{ form.telephone.value|default:'' }}">
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold small">Email</label>
+          <input type="email" name="email" class="form-control" value="{{ form.email.value|default:'' }}">
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold small text-muted">Numéro d'agrément</label>
+          <input type="text" class="form-control bg-light" value="{{ hopital.numero_agrement }}" disabled>
+          <div class="form-text">Le numéro d'agrément ne peut pas être modifié.</div>
+        </div>
+        <button type="submit" class="btn btn-primary fw-semibold px-5">
+          <i class="bi bi-check2 me-1"></i> Enregistrer les modifications
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

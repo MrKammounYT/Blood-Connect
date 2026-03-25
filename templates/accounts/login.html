@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Connexion — BloodConnect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+    <div class="card border-0 shadow-sm rounded-4 p-4 mt-3">
+      <div class="text-center mb-4">
+        <i class="bi bi-droplet-fill text-danger" style="font-size:2.5rem;"></i>
+        <h4 class="fw-bold mt-2">Connexion</h4>
+        <p class="text-muted small">Bienvenue sur BloodConnect</p>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Nom d'utilisateur</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" name="username" class="form-control" placeholder="Votre identifiant" required autofocus>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Mot de passe</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 fw-semibold py-2">
+          <i class="bi bi-box-arrow-in-right me-1"></i> Se connecter
+        </button>
+      </form>
+      <hr class="my-3">
+      <div class="text-center small text-muted">
+        Pas encore inscrit ?<br>
+        <a href="{% url 'accounts:register_donneur' %}" class="text-danger fw-semibold">Inscription Donneur</a>
+        &nbsp;|&nbsp;
+        <a href="{% url 'accounts:register_hopital' %}" class="text-danger fw-semibold">Inscription Hôpital</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

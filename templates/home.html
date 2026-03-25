@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}BloodConnect — Donnez du sang, sauvez des vies{% endblock %}
+
+{% block extra_head %}
+<style>
+  .hero {
+    background: linear-gradient(135deg, #c0392b 0%, #96281b 100%);
+    color: white;
+    padding: 80px 0;
+    border-radius: 0 0 40px 40px;
+    margin-top: -24px;
+  }
+  .blood-type-card { border: 2px solid #fadbd8; border-radius: 12px; text-align: center; padding: 12px; }
+  .blood-type-card .type { font-size: 1.5rem; font-weight: 800; color: #c0392b; }
+  .feature-card { border: none; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); transition: transform 0.2s; }
+  .feature-card:hover { transform: translateY(-4px); }
+  .feature-icon { width: 56px; height: 56px; background: #fadbd8; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #c0392b; margin-bottom: 16px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero text-center mb-5" style="margin-left: -12px; margin-right: -12px;">
+  <div class="container">
+    <i class="bi bi-droplet-fill" style="font-size:3rem; opacity:0.8;"></i>
+    <h1 class="display-4 fw-bold mt-2 mb-3">Donnez du sang,<br>sauvez des vies.</h1>
+    <p class="lead mb-4 opacity-75">Mettez en relation donneurs volontaires et établissements hospitaliers.<br>Chaque don compte.</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{% url 'accounts:register_donneur' %}" class="btn btn-light btn-lg fw-semibold text-danger px-5">
+        <i class="bi bi-droplet"></i> Je suis donneur
+      </a>
+      <a href="{% url 'accounts:register_hopital' %}" class="btn btn-outline-light btn-lg px-5">
+        <i class="bi bi-hospital"></i> Je suis un hôpital
+      </a>
+    </div>
+    <p class="mt-3 opacity-50 small">Déjà inscrit ? <a href="{% url 'accounts:login' %}" class="text-white fw-semibold">Se connecter</a></p>
+  </div>
+</div>
+
+<div class="row g-4 mb-5">
+  <div class="col-md-4">
+    <div class="card feature-card h-100 p-4">
+      <div class="feature-icon"><i class="bi bi-people-fill"></i></div>
+      <h5 class="fw-bold">Donneurs volontaires</h5>
+      <p class="text-muted mb-0">Inscrivez-vous, renseignez votre groupe sanguin et répondez aux appels urgents compatibles près de chez vous.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card feature-card h-100 p-4">
+      <div class="feature-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+      <h5 class="fw-bold">Demandes urgentes</h5>
+      <p class="text-muted mb-0">Les hôpitaux publient leurs besoins critiques en sang. Les donneurs compatibles sont notifiés immédiatement.</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card feature-card h-100 p-4">
+      <div class="feature-icon"><i class="bi bi-calendar-heart-fill"></i></div>
+      <h5 class="fw-bold">Campagnes de collecte</h5>
+      <p class="text-muted mb-0">Participez aux campagnes organisées par les établissements hospitaliers et choisissez votre créneau horaire.</p>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+  <h5 class="fw-bold mb-3"><i class="bi bi-table text-danger me-2"></i>Compatibilité des groupes sanguins</h5>
+  <div class="table-responsive">
+    <table class="table table-bordered text-center align-middle table-sm">
+      <thead class="table-danger">
+        <tr>
+          <th>Receveur \ Donneur</th>
+          <th>O-</th><th>O+</th><th>A-</th><th>A+</th><th>B-</th><th>B+</th><th>AB-</th><th>AB+</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>O-</th>  <td>✓</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>O+</th>  <td>✓</td><td>✓</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>A-</th>  <td>✓</td><td></td><td>✓</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>A+</th>  <td>✓</td><td>✓</td><td>✓</td><td>✓</td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>B-</th>  <td>✓</td><td></td><td></td><td></td><td>✓</td><td></td><td></td><td></td></tr>
+        <tr><th>B+</th>  <td>✓</td><td>✓</td><td></td><td></td><td>✓</td><td>✓</td><td></td><td></td></tr>
+        <tr><th>AB-</th> <td>✓</td><td></td><td>✓</td><td></td><td>✓</td><td></td><td>✓</td><td></td></tr>
+        <tr><th>AB+</th> <td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
