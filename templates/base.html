@@ -40,7 +40,20 @@
     <div class="collapse navbar-collapse" id="navMain">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
         {% if user.is_authenticated %}
-          {% if user.role == 'donneur' and not user.is_superuser %}
+          {% if user.is_superuser or user.role == 'admin' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin_panel:dashboard' %}"><i class="bi bi-speedometer2"></i> Tableau de bord</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin_panel:hospitals' %}"><i class="bi bi-hospital"></i> Hôpitaux</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin_panel:demandes_map' %}"><i class="bi bi-geo-alt"></i> Carte demandes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'admin_panel:export_donors' %}"><i class="bi bi-download"></i> Export CSV</a>
+            </li>
+        {% elif user.role == 'donneur' and not user.is_superuser %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'donor:dashboard' %}"><i class="bi bi-grid"></i> Tableau de bord</a>
             </li>

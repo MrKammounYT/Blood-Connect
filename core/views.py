@@ -2,9 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.utils import timezone
-from accounts.decorators import donor_required, hospital_required
 from django.db import transaction
-from .models import DemandeUrgente, Don, ReponseAppel, Campagne, Inscription, BLOOD_COMPATIBILITY
+from django.db.models import Count, Q
+from accounts.decorators import donor_required, hospital_required, admin_required
+from accounts.models import User
+from .models import DemandeUrgente, Don, ReponseAppel, Campagne, Inscription, Donneur, Hopital, BLOOD_COMPATIBILITY, BLOOD_GROUPS
 from .forms import DemandeUrgenteForm, DonForm, CampagneForm, InscriptionForm
 
 
@@ -188,7 +190,7 @@ def close_demande(request, pk):
 @hospital_required
 def demande_history(request):
     hopital = request.user.hopital
-    demandes = hopital.demandes.all()
+    demandes = hopital.demandes.prefetch_related('reponses').all()
 
     statut_filter = request.GET.get('statut', '')
     if statut_filter:
@@ -367,3 +369,99 @@ def register_campagne(request, pk):
         form = InscriptionForm()
 
     return render(request, 'donor/register_campagne.html', {'form': form, 'campagne': campagne})
+
+
+# ─── Admin panel views ────────────────────────────────────────────────────────
+
+@admin_required
+def admin_dashboard(request):
+    total_donors = Donneur.objects.count()
+    total_dons = Don.objects.filter(valide=True).count()
+    pending_hospitals = Hopital.objects.filter(valide=False).count()
+
+    demandes_by_group = (
+        DemandeUrgente.objects
+        .filter(statut=DemandeUrgente.Statut.ACTIVE)
+        .values('groupe_sanguin')
+        .annotate(total=Count('id'))
+        .order_by('groupe_sanguin')
+    )
+
+    recent_dons = Don.objects.select_related('donneur__user', 'hopital').order_by('-date_enregistrement')[:8]
+    recent_demandes = DemandeUrgente.objects.select_related('hopital').order_by('-date_creation')[:8]
+
+    return render(request, 'admin_panel/dashboard.html', {
+        'total_donors': total_donors,
+        'total_dons': total_dons,
+        'pending_hospitals': pending_hospitals,
+        'total_hospitals': Hopital.objects.filter(valide=True).count(),
+        'active_demandes': DemandeUrgente.objects.filter(statut=DemandeUrgente.Statut.ACTIVE).count(),
+        'demandes_by_group': demandes_by_group,
+        'recent_dons': recent_dons,
+        'recent_demandes': recent_demandes,
+    })
+
+
+@admin_required
+def admin_hospitals(request):
+    pending = Hopital.objects.filter(valide=False).select_related('user')
+    validated = Hopital.objects.filter(valide=True).select_related('user')
+    return render(request, 'admin_panel/hospitals.html', {
+        'pending': pending,
+        'validated': validated,
+    })
+
+
+@admin_required
+def admin_validate_hospital(request, pk):
+    hopital = get_object_or_404(Hopital, pk=pk)
+    hopital.valide = True
+    hopital.save()
+    messages.success(request, f"Hôpital « {hopital.nom} » validé.")
+    return redirect('admin_panel:hospitals')
+
+
+@admin_required
+def admin_reject_hospital(request, pk):
+    hopital = get_object_or_404(Hopital, pk=pk)
+    hopital.valide = False
+    hopital.save()
+    messages.warning(request, f"Hôpital « {hopital.nom} » rejeté.")
+    return redirect('admin_panel:hospitals')
+
+
+@admin_required
+def admin_demandes_map(request):
+    demandes = (
+        DemandeUrgente.objects
+        .filter(statut=DemandeUrgente.Statut.ACTIVE)
+        .select_related('hopital')
+        .order_by('hopital__ville', 'groupe_sanguin')
+    )
+    from collections import defaultdict
+    by_city = defaultdict(list)
+    for d in demandes:
+        by_city[d.hopital.ville].append(d)
+
+    return render(request, 'admin_panel/demandes_map.html', {
+        'by_city': dict(by_city),
+        'blood_groups': [g[0] for g in BLOOD_GROUPS],
+    })
+
+
+@admin_required
+def admin_export_donors(request):
+    import csv
+    from django.http import HttpResponse
+    response = HttpResponse(content_type='text/csv; charset=utf-8-sig')
+    response['Content-Disposition'] = 'attachment; filename="donneurs.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Nom', 'Prénom', 'Email', 'Groupe sanguin', 'Sexe', 'Ville', 'Actif', 'Nb dons'])
+    for d in Donneur.objects.select_related('user').prefetch_related('dons'):
+        writer.writerow([
+            d.user.last_name, d.user.first_name, d.user.email,
+            d.groupe_sanguin, d.get_sexe_display(), d.ville,
+            'Oui' if d.actif else 'Non',
+            d.dons.filter(valide=True).count(),
+        ])
+    return response

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}Gestion des hôpitaux — BloodConnect{% endblock %}
+
+{% block content %}
+<h5 class="fw-bold mb-4"><i class="bi bi-hospital-fill text-danger me-2"></i>Gestion des hôpitaux</h5>
+
+<!-- Pending -->
+<div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+  <h6 class="fw-bold mb-3">
+    <i class="bi bi-clock-fill text-warning me-2"></i>En attente de validation
+    {% if pending %}<span class="badge bg-warning text-dark ms-1">{{ pending.count }}</span>{% endif %}
+  </h6>
+  {% if pending %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr><th>Nom</th><th>Ville</th><th>Agrément</th><th>Email</th><th>Inscrit le</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for h in pending %}
+            <tr>
+              <td class="fw-semibold">{{ h.nom }}</td>
+              <td>{{ h.ville }}</td>
+              <td><code>{{ h.numero_agrement }}</code></td>
+              <td class="text-muted small">{{ h.user.email }}</td>
+              <td class="text-muted small">{{ h.user.date_joined|date:"d/m/Y" }}</td>
+              <td>
+                <form method="post" action="{% url 'admin_panel:validate_hospital' h.pk %}" class="d-inline">
+                  {% csrf_token %}
+                  <button class="btn btn-success btn-sm fw-semibold me-1">
+                    <i class="bi bi-check2 me-1"></i>Valider
+                  </button>
+                </form>
+                <form method="post" action="{% url 'admin_panel:reject_hospital' h.pk %}" class="d-inline">
+                  {% csrf_token %}
+                  <button class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-x me-1"></i>Rejeter
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted mb-0 small"><i class="bi bi-check-circle-fill text-success me-1"></i>Aucun hôpital en attente.</p>
+  {% endif %}
+</div>
+
+<!-- Validated -->
+<div class="card border-0 shadow-sm rounded-4 p-4">
+  <h6 class="fw-bold mb-3">
+    <i class="bi bi-patch-check-fill text-success me-2"></i>Hôpitaux validés
+    <span class="badge bg-success ms-1">{{ validated.count }}</span>
+  </h6>
+  {% if validated %}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr><th>Nom</th><th>Ville</th><th>Agrément</th><th>Demandes actives</th><th></th></tr>
+        </thead>
+        <tbody>
+          {% for h in validated %}
+            <tr>
+              <td class="fw-semibold">{{ h.nom }}</td>
+              <td>{{ h.ville }}</td>
+              <td><code>{{ h.numero_agrement }}</code></td>
+              <td>{{ h.demandes.count }}</td>
+              <td>
+                <form method="post" action="{% url 'admin_panel:reject_hospital' h.pk %}">
+                  {% csrf_token %}
+                  <button class="btn btn-outline-secondary btn-sm"
+                    onclick="return confirm('Désactiver cet hôpital ?')">
+                    <i class="bi bi-slash-circle me-1"></i>Désactiver
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-muted mb-0 small">Aucun hôpital validé.</p>
+  {% endif %}
+</div>
+{% endblock %}

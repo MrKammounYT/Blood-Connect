@@ -1,6 +1,15 @@
 from django.urls import path
 from . import views
 
+admin_urlpatterns = [
+    path('', views.admin_dashboard, name='dashboard'),
+    path('hospitals/', views.admin_hospitals, name='hospitals'),
+    path('hospitals/<int:pk>/validate/', views.admin_validate_hospital, name='validate_hospital'),
+    path('hospitals/<int:pk>/reject/', views.admin_reject_hospital, name='reject_hospital'),
+    path('demandes/', views.admin_demandes_map, name='demandes_map'),
+    path('export/donors/', views.admin_export_donors, name='export_donors'),
+]
+
 donor_urlpatterns = [
     path('dashboard/', views.donor_dashboard, name='dashboard'),
     path('demande/<int:pk>/respond/', views.respond_demande, name='respond_demande'),

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}BloodConnect — Donnez du sang, sauvez des vies{% endblock %}
 
 {% block extra_head %}
@@ -6,36 +7,50 @@
   .hero {
     background: linear-gradient(135deg, #c0392b 0%, #96281b 100%);
     color: white;
-    padding: 80px 0;
+    padding: 70px 0 80px;
     border-radius: 0 0 40px 40px;
     margin-top: -24px;
   }
-  .blood-type-card { border: 2px solid #fadbd8; border-radius: 12px; text-align: center; padding: 12px; }
-  .blood-type-card .type { font-size: 1.5rem; font-weight: 800; color: #c0392b; }
   .feature-card { border: none; border-radius: 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); transition: transform 0.2s; }
   .feature-card:hover { transform: translateY(-4px); }
   .feature-icon { width: 56px; height: 56px; background: #fadbd8; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: #c0392b; margin-bottom: 16px; }
+.steps-section { background: #fff5f5; border-radius: 20px; padding: 40px; }
+  .step-num { width: 40px; height: 40px; background: #c0392b; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="hero text-center mb-5" style="margin-left: -12px; margin-right: -12px;">
+
+<!-- Hero -->
+<div class="hero mb-5" style="margin-left:-12px;margin-right:-12px;">
   <div class="container">
-    <i class="bi bi-droplet-fill" style="font-size:3rem; opacity:0.8;"></i>
-    <h1 class="display-4 fw-bold mt-2 mb-3">Donnez du sang,<br>sauvez des vies.</h1>
-    <p class="lead mb-4 opacity-75">Mettez en relation donneurs volontaires et établissements hospitaliers.<br>Chaque don compte.</p>
-    <div class="d-flex gap-3 justify-content-center flex-wrap">
-      <a href="{% url 'accounts:register_donneur' %}" class="btn btn-light btn-lg fw-semibold text-danger px-5">
-        <i class="bi bi-droplet"></i> Je suis donneur
-      </a>
-      <a href="{% url 'accounts:register_hopital' %}" class="btn btn-outline-light btn-lg px-5">
-        <i class="bi bi-hospital"></i> Je suis un hôpital
-      </a>
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 text-center text-lg-start">
+        <div class="mb-3">
+          <span class="badge bg-white text-danger fw-semibold px-3 py-2" style="font-size:0.85rem;">
+            <i class="bi bi-heart-pulse-fill me-1"></i>Plateforme nationale du don de sang
+          </span>
+        </div>
+        <h1 class="display-4 fw-bold mb-3">Donnez du sang,<br>sauvez des vies.</h1>
+        <p class="lead mb-4 opacity-75">Mettez en relation donneurs volontaires et établissements hospitaliers. Chaque don peut sauver jusqu'à <strong>3 vies</strong>.</p>
+        <div class="d-flex gap-3 flex-wrap justify-content-center justify-content-lg-start">
+          <a href="{% url 'accounts:register_donneur' %}" class="btn btn-light btn-lg fw-semibold text-danger px-4">
+            <i class="bi bi-droplet me-2"></i>Je suis donneur
+          </a>
+          <a href="{% url 'accounts:register_hopital' %}" class="btn btn-outline-light btn-lg px-4">
+            <i class="bi bi-hospital me-2"></i>Je suis un hôpital
+          </a>
+        </div>
+        <p class="mt-3 opacity-50 small">Déjà inscrit ? <a href="{% url 'accounts:login' %}" class="text-white fw-semibold">Se connecter</a></p>
+      </div>
+      <div class="col-lg-6 d-flex justify-content-center">
+        <img src="{% static 'landing-img-1.png' %}" alt="Don de sang" class="img-fluid rounded-4" style="max-height:380px; object-fit:cover; box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
+      </div>
     </div>
-    <p class="mt-3 opacity-50 small">Déjà inscrit ? <a href="{% url 'accounts:login' %}" class="text-white fw-semibold">Se connecter</a></p>
   </div>
 </div>
 
+<!-- Features -->
 <div class="row g-4 mb-5">
   <div class="col-md-4">
     <div class="card feature-card h-100 p-4">
@@ -60,6 +75,60 @@
   </div>
 </div>
 
+<!-- Photo section -->
+<div class="row g-3 mb-5">
+  <div class="col-md-4">
+    <img src="https://www.lifeblood.com.au/sites/default/files/2025-04/microbiome-content-tile-448x240.jpg"
+         alt="Recherche don de sang" class="img-fluid rounded-4 w-100" style="height:240px;object-fit:cover;">
+  </div>
+  <div class="col-md-4">
+    <img src="https://www.lifeblood.com.au/sites/default/files/2025-04/milk-content-tile-448x240.jpg"
+         alt="Don de sang" class="img-fluid rounded-4 w-100" style="height:240px;object-fit:cover;">
+  </div>
+  <div class="col-md-4">
+    <img src="https://www.lifeblood.com.au/sites/default/files/styles/3_columns_448_x_240/public/2026-03/PXL_20260219_010131194.jpg"
+         alt="Campagne de don" class="img-fluid rounded-4 w-100" style="height:240px;object-fit:cover;">
+  </div>
+</div>
+
+<!-- How it works -->
+<div class="steps-section mb-5">
+  <h5 class="fw-bold text-center mb-4"><i class="bi bi-signpost-2-fill text-danger me-2"></i>Comment ça marche ?</h5>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <p class="fw-bold text-danger mb-3">Pour les donneurs</p>
+      <div class="d-flex gap-3 mb-3">
+        <div class="step-num">1</div>
+        <div><strong>Créez votre profil</strong><br><span class="text-muted small">Renseignez votre groupe sanguin, ville et informations médicales.</span></div>
+      </div>
+      <div class="d-flex gap-3 mb-3">
+        <div class="step-num">2</div>
+        <div><strong>Consultez les appels urgents</strong><br><span class="text-muted small">Seuls les appels compatibles avec votre groupe sanguin s'affichent.</span></div>
+      </div>
+      <div class="d-flex gap-3">
+        <div class="step-num">3</div>
+        <div><strong>Donnez et enregistrez</strong><br><span class="text-muted small">Répondez à un appel, donnez votre sang et enregistrez votre don.</span></div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <p class="fw-bold text-danger mb-3">Pour les hôpitaux</p>
+      <div class="d-flex gap-3 mb-3">
+        <div class="step-num">1</div>
+        <div><strong>Inscrivez votre établissement</strong><br><span class="text-muted small">Soumettez votre numéro d'agrément pour validation par l'admin.</span></div>
+      </div>
+      <div class="d-flex gap-3 mb-3">
+        <div class="step-num">2</div>
+        <div><strong>Publiez des demandes urgentes</strong><br><span class="text-muted small">Spécifiez le groupe sanguin, la quantité et la date limite.</span></div>
+      </div>
+      <div class="d-flex gap-3">
+        <div class="step-num">3</div>
+        <div><strong>Gérez les campagnes</strong><br><span class="text-muted small">Organisez des collectes avec créneaux horaires et gérez les inscrits.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Blood type compatibility table -->
 <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
   <h5 class="fw-bold mb-3"><i class="bi bi-table text-danger me-2"></i>Compatibilité des groupes sanguins</h5>
   <div class="table-responsive">
@@ -71,14 +140,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr><th>O-</th>  <td>✓</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><th>O+</th>  <td>✓</td><td>✓</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><th>A-</th>  <td>✓</td><td></td><td>✓</td><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><th>A+</th>  <td>✓</td><td>✓</td><td>✓</td><td>✓</td><td></td><td></td><td></td><td></td></tr>
-        <tr><th>B-</th>  <td>✓</td><td></td><td></td><td></td><td>✓</td><td></td><td></td><td></td></tr>
-        <tr><th>B+</th>  <td>✓</td><td>✓</td><td></td><td></td><td>✓</td><td>✓</td><td></td><td></td></tr>
-        <tr><th>AB-</th> <td>✓</td><td></td><td>✓</td><td></td><td>✓</td><td></td><td>✓</td><td></td></tr>
-        <tr><th>AB+</th> <td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+        <tr><th>O-</th>  <td class="table-danger">✓</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>O+</th>  <td class="table-danger">✓</td><td class="table-danger">✓</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>A-</th>  <td class="table-danger">✓</td><td></td><td class="table-danger">✓</td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>A+</th>  <td class="table-danger">✓</td><td class="table-danger">✓</td><td class="table-danger">✓</td><td class="table-danger">✓</td><td></td><td></td><td></td><td></td></tr>
+        <tr><th>B-</th>  <td class="table-danger">✓</td><td></td><td></td><td></td><td class="table-danger">✓</td><td></td><td></td><td></td></tr>
+        <tr><th>B+</th>  <td class="table-danger">✓</td><td class="table-danger">✓</td><td></td><td></td><td class="table-danger">✓</td><td class="table-danger">✓</td><td></td><td></td></tr>
+        <tr><th>AB-</th> <td class="table-danger">✓</td><td></td><td class="table-danger">✓</td><td></td><td class="table-danger">✓</td><td></td><td class="table-danger">✓</td><td></td></tr>
+        <tr><th>AB+</th> <td class="table-danger">✓</td><td class="table-danger">✓</td><td class="table-danger">✓</td><td class="table-danger">✓</td><td class="table-danger">✓</td><td class="table-danger">✓</td><td class="table-danger">✓</td><td class="table-danger">✓</td></tr>
       </tbody>
     </table>
   </div>
