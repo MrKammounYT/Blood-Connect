@@ -40,9 +40,12 @@
     <div class="collapse navbar-collapse" id="navMain">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
         {% if user.is_authenticated %}
-          {% if user.role == 'donneur' %}
+          {% if user.role == 'donneur' and not user.is_superuser %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'donor:dashboard' %}"><i class="bi bi-grid"></i> Tableau de bord</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'donor:campagnes' %}"><i class="bi bi-calendar-heart"></i> Campagnes</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'accounts:profile_donneur' %}"><i class="bi bi-person-circle"></i> Mon profil</a>
@@ -50,6 +53,12 @@
           {% elif user.role == 'hopital' %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'hospital:dashboard' %}"><i class="bi bi-grid"></i> Tableau de bord</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'hospital:demande_history' %}"><i class="bi bi-exclamation-circle"></i> Demandes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'hospital:campagne_list' %}"><i class="bi bi-calendar-heart"></i> Campagnes</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'accounts:profile_hopital' %}"><i class="bi bi-building"></i> Mon profil</a>

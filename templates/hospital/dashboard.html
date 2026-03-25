@@ -55,8 +55,8 @@
           <i class="bi bi-calendar-heart"></i>
         </div>
         <div>
-          <div class="text-muted small">Campagnes</div>
-          <div class="fw-bold fs-4">{{ hopital.campagnes.count }}</div>
+          <div class="text-muted small">Campagnes actives</div>
+          <div class="fw-bold fs-4">{{ campagnes_actives_count }}</div>
         </div>
       </div>
     </div>
@@ -96,9 +96,16 @@
             <td>{{ d.quantite }} poches</td>
             <td>{{ d.delai|date:"d/m/Y" }}</td>
             <td>{{ d.reponses.count }}</td>
-            <td>
-              <a href="{% url 'hospital:demande_respondents' d.pk %}" class="btn btn-sm btn-outline-primary me-1">Réponses</a>
+            <td class="d-flex gap-1">
+              <a href="{% url 'hospital:demande_respondents' d.pk %}" class="btn btn-sm btn-outline-primary">Réponses</a>
               <a href="{% url 'hospital:edit_demande' d.pk %}" class="btn btn-sm btn-outline-secondary">Modifier</a>
+              <form method="post" action="{% url 'hospital:delete_demande' d.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger"
+                  onclick="return confirm('Supprimer définitivement cette demande ?')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
             </td>
           </tr>
         {% endfor %}

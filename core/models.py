@@ -115,7 +115,9 @@ class Campagne(models.Model):
     lieu = models.CharField(max_length=200)
     groupes_cibles = models.CharField(max_length=100, help_text='Ex: A+,B+,O-')
     capacite_totale = models.PositiveIntegerField()
+    capacite_par_creneau = models.PositiveIntegerField(default=10, help_text='Nombre max de donneurs par créneau horaire')
     description = models.TextField(blank=True)
+    annulee = models.BooleanField(default=False)
     date_creation = models.DateTimeField(auto_now_add=True)
 
     def places_restantes(self):
@@ -123,6 +125,9 @@ class Campagne(models.Model):
 
     def est_complete(self):
         return self.places_restantes() <= 0
+
+    def get_groupes_list(self):
+        return [g.strip() for g in self.groupes_cibles.split(',') if g.strip()]
 
     def __str__(self):
         return f'{self.nom} — {self.date}'

@@ -60,12 +60,19 @@
               </a>
             </td>
             <td class="text-muted small">{{ demande.date_creation|date:"d/m/Y" }}</td>
-            <td>
+            <td class="d-flex gap-1">
               {% if demande.statut == 'active' %}
                 <a href="{% url 'hospital:edit_demande' demande.pk %}" class="btn btn-sm btn-outline-secondary">
                   <i class="bi bi-pencil"></i>
                 </a>
               {% endif %}
+              <form method="post" action="{% url 'hospital:delete_demande' demande.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger"
+                  onclick="return confirm('Supprimer définitivement cette demande ?')">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
             </td>
           </tr>
         {% empty %}

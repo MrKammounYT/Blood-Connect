@@ -3,11 +3,18 @@
 
 {% block content %}
 {% if upcoming_inscription %}
-<div class="alert alert-info d-flex gap-2 align-items-center">
-  <i class="bi bi-calendar-event-fill flex-shrink-0"></i>
-  <span>Rappel : vous êtes inscrit à la campagne <strong>{{ upcoming_inscription.campagne.nom }}</strong>
-  le <strong>{{ upcoming_inscription.campagne.date|date:"d/m/Y" }}</strong> à {{ upcoming_inscription.creneau_horaire|time:"H:i" }}.</span>
-</div>
+  <div class="alert {% if days_until <= 7 %}alert-warning{% else %}alert-info{% endif %} d-flex gap-2 align-items-center">
+    <i class="bi bi-calendar-event-fill flex-shrink-0"></i>
+    <span>
+      {% if days_until <= 7 %}
+        <strong>Dans {{ days_until }} jour(s) !</strong>
+      {% endif %}
+      Vous êtes inscrit à la campagne <strong>{{ upcoming_inscription.campagne.nom }}</strong>
+      le <strong>{{ upcoming_inscription.campagne.date|date:"d/m/Y" }}</strong>
+      à <strong>{{ upcoming_inscription.creneau_horaire|time:"H:i" }}</strong>
+      — {{ upcoming_inscription.campagne.lieu }}.
+    </span>
+  </div>
 {% endif %}
 
 <div class="d-flex align-items-center gap-3 mb-4">

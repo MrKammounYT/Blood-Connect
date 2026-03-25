@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Nouvelle campagne — BloodConnect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-7">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+      <h5 class="fw-bold mb-1"><i class="bi bi-calendar-heart text-danger me-2"></i>Créer une campagne de collecte</h5>
+      <p class="text-muted small mb-4">Les donneurs dont le groupe sanguin correspond verront cette campagne.</p>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">{{ form.nom.label }}</label>
+          <input type="text" name="nom" class="form-control {% if form.nom.errors %}is-invalid{% endif %}" value="{{ form.nom.value|default:'' }}">
+          {% for e in form.nom.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">{{ form.date.label }}</label>
+            <input type="date" name="date" class="form-control {% if form.date.errors %}is-invalid{% endif %}" value="{{ form.date.value|default:'' }}">
+            {% for e in form.date.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">{{ form.lieu.label }}</label>
+            <input type="text" name="lieu" class="form-control {% if form.lieu.errors %}is-invalid{% endif %}" value="{{ form.lieu.value|default:'' }}">
+          </div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">{{ form.capacite_totale.label }}</label>
+            <input type="number" name="capacite_totale" class="form-control" value="{{ form.capacite_totale.value|default:'' }}" min="1">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">{{ form.capacite_par_creneau.label }}</label>
+            <input type="number" name="capacite_par_creneau" class="form-control" value="{{ form.capacite_par_creneau.value|default:'10' }}" min="1">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold small">{{ form.groupes_cibles.label }}</label>
+          <div class="d-flex flex-wrap gap-2 p-3 border rounded-3">
+            {% for val, label in form.fields.groupes_cibles.choices %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="groupes_cibles" value="{{ val }}"
+                  id="gc_{{ val }}"
+                  {% if val in form.groupes_cibles.value %}checked{% endif %}>
+                <label class="form-check-label fw-semibold" for="gc_{{ val }}" style="color:#c0392b;">{{ label }}</label>
+              </div>
+            {% endfor %}
+          </div>
+          {% for e in form.groupes_cibles.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold small">{{ form.description.label }}</label>
+          <textarea name="description" class="form-control" rows="3">{{ form.description.value|default:'' }}</textarea>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary fw-semibold px-4">
+            <i class="bi bi-check2 me-1"></i>Créer la campagne
+          </button>
+          <a href="{% url 'hospital:campagne_list' %}" class="btn btn-outline-secondary px-4">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

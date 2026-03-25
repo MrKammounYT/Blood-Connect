@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}S'inscrire à une campagne — BloodConnect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-5">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+      <h5 class="fw-bold mb-1"><i class="bi bi-calendar-plus text-danger me-2"></i>Inscription à la campagne</h5>
+
+      <div class="alert alert-light border rounded-3 my-3 py-2 px-3">
+        <div class="fw-semibold">{{ campagne.nom }}</div>
+        <div class="text-muted small">
+          <i class="bi bi-calendar3 me-1"></i>{{ campagne.date|date:"d/m/Y" }}
+          &nbsp;·&nbsp;<i class="bi bi-geo-alt me-1"></i>{{ campagne.lieu }}
+        </div>
+        <div class="text-muted small"><i class="bi bi-hospital me-1"></i>{{ campagne.hopital.nom }}</div>
+        <div class="mt-1">
+          {% for g in campagne.get_groupes_list %}
+            <span class="badge me-1" style="background:#c0392b;">{{ g }}</span>
+          {% endfor %}
+        </div>
+        <div class="small mt-1 text-muted">{{ campagne.places_restantes }} place(s) restante(s) · max {{ campagne.capacite_par_creneau }} par créneau</div>
+      </div>
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-4">
+          <label class="form-label fw-semibold small">{{ form.creneau_horaire.label }}</label>
+          <input type="time" name="creneau_horaire" class="form-control {% if form.creneau_horaire.errors %}is-invalid{% endif %}"
+                 value="{{ form.creneau_horaire.value|default:'' }}">
+          {% for e in form.creneau_horaire.errors %}<div class="invalid-feedback">{{ e }}</div>{% endfor %}
+          <div class="form-text">Choisissez l'heure à laquelle vous souhaitez venir.</div>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary fw-semibold px-4">
+            <i class="bi bi-check2 me-1"></i>Confirmer l'inscription
+          </button>
+          <a href="{% url 'donor:campagnes' %}" class="btn btn-outline-secondary px-4">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

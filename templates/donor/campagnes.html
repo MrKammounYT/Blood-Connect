@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Campagnes de collecte — BloodConnect{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center gap-3 mb-4">
+  <div>
+    <h5 class="fw-bold mb-0"><i class="bi bi-calendar-heart text-danger me-2"></i>Campagnes de collecte</h5>
+    <p class="text-muted small mb-0">Campagnes ouvertes compatibles avec votre groupe sanguin <span class="badge" style="background:#c0392b;">{{ donneur.groupe_sanguin }}</span></p>
+  </div>
+</div>
+
+{% if campagnes %}
+  <div class="row g-3">
+    {% for c in campagnes %}
+      {% with groupes=c.get_groupes_list %}
+      {% if not groupes or donneur.groupe_sanguin in groupes %}
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="fw-bold mb-0">{{ c.nom }}</h6>
+            {% if c.est_complete %}
+              <span class="badge bg-secondary">Complet</span>
+            {% else %}
+              <span class="badge bg-success">{{ c.places_restantes }} place(s)</span>
+            {% endif %}
+          </div>
+          <div class="text-muted small mb-1">
+            <i class="bi bi-hospital me-1"></i>{{ c.hopital.nom }}
+          </div>
+          <div class="text-muted small mb-2">
+            <i class="bi bi-calendar3 me-1"></i>{{ c.date|date:"d/m/Y" }}
+            &nbsp;·&nbsp;<i class="bi bi-geo-alt me-1"></i>{{ c.lieu }}
+          </div>
+          <div class="mb-3">
+            {% for g in groupes %}
+              <span class="badge me-1" style="background:#c0392b;">{{ g }}</span>
+            {% endfor %}
+          </div>
+          {% if c.description %}
+            <p class="text-muted small mb-3">{{ c.description|truncatechars:100 }}</p>
+          {% endif %}
+          {% if c.pk in inscriptions_ids %}
+            <span class="badge bg-success w-100 py-2"><i class="bi bi-check-circle me-1"></i>Déjà inscrit</span>
+          {% elif c.est_complete %}
+            <button class="btn btn-secondary w-100" disabled>Complet</button>
+          {% else %}
+            <a href="{% url 'donor:register_campagne' c.pk %}" class="btn btn-primary w-100 fw-semibold">
+              <i class="bi bi-calendar-plus me-1"></i>S'inscrire
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+      {% endwith %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card border-0 shadow-sm rounded-4 p-5 text-center text-muted">
+    <i class="bi bi-calendar-x" style="font-size:2.5rem;opacity:0.3;"></i>
+    <p class="mt-3 mb-0">Aucune campagne disponible pour le moment.</p>
+  </div>
+{% endif %}
+{% endblock %}
