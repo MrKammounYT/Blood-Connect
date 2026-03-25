@@ -1,0 +1,37 @@
+# Claude
+.claude/
+
+# Virtual environment
+venv/
+env/
+.env/
+
+# Environment variables
+.env
+.env.local
+
+# Django
+*.pyc
+__pycache__/
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Python
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
