@@ -11,7 +11,7 @@ BLOOD_GROUPS = [
     ('O+', 'O+'), ('O-', 'O-'),
 ]
 
-# Compatibility: key can receive from values
+# Compatibility
 BLOOD_COMPATIBILITY = {
     'A+':  ['A+', 'A-', 'O+', 'O-'],
     'A-':  ['A-', 'O-'],
